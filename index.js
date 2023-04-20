@@ -1,6 +1,7 @@
 const prompt = require('prompt-sync')()
 const SHA256 = require('crypto-js/sha256')
 const fs = require('fs');
+const { versions } = require('process');
 
 
 let copia;
@@ -37,22 +38,54 @@ const login = (bancoDeDados) =>{
     })
     console.log(filtraLogin)
 
-const verificarAgenda = () => {
-    console.log(bancoDeDados)
-}
-    
 
+
+    
+    
+    
+    const cadastraNum = (copiaNum) => {
+        
+        const nomeDoContato = prompt("digite o nome da pessoa: ")
+        const numCadastrado = prompt("digite o número: ")
+        let criarNum = [{nomeDoContato, numCadastrado}]
+        
+        if(fs.existsSync(`./db/${logarUsuario}.json`)){ 
+            const recuperaAgenda = require(`./db/${logarUsuario}.json`)
+            copiaNum = [...recuperaAgenda, criarNum]
+            fs.writeFileSync(`./db/${logarUsuario}.json`, JSON.stringify(copiaNum))
+        }else {
+            fs.appendFileSync(`./db/${logarUsuario}.json`, JSON.stringify(criarNum) ) 
+        }
+        
+        
+        
+        // const addNum = [...bancoDeDados, bancoDeNum]
+        // console.log(addNum)
+        // fs.writeFileSync('./users.json', JSON.stringify(cadastrando))
+    }
+    
+    const verificarAgenda = () => {
+        const mostrar = require(`./db/${logarUsuario}.json`)
+        
+        console.log(mostrar)
+    }
+
+    // const voltar = () => {
+    //     login()
+    // }
+    
     if(filtraLogin.senha === logarSenhaCrypto){2
         while(opcao !== '4'){
             console.log('menu :'+'\n'+'(1) - cadastrar novo número '+'\n' +'(2) - agenda verificada' + '\n' + '(3) - voltar'+ '\n' + '(4) - sair')
             opcao = prompt('escolha: ')
             if(opcao === '1'){
-                console.log('cadastrar novo numero')
+                console.log('Digite o número desejado: ')
+                cadastraNum()
             }else if(opcao === '2'){
-                //verificarAgenda()
-                console.log('agenda verificada')
+                verificarAgenda()
+                //console.log('verificar agenda')
             }else if(opcao === '3'){
-                login()
+                inicio()
             }
         }
 
@@ -64,7 +97,7 @@ const verificarAgenda = () => {
 
 let opcao;
 
-while(opcao !== '4'){
+const inicio = () => {
     console.log('menu :'+'\n'+'(1) - cadastrar usuário e senha '+'\n' +'(2) - logar' + '\n' + '(4) - sair')
     opcao = prompt('opção: ')
     if(opcao === '1'){ 
@@ -72,4 +105,8 @@ while(opcao !== '4'){
     }else if(opcao === '2'){
         login(copia)
     }
+
+}
+while(opcao !== '4'){
+    inicio()
 }
